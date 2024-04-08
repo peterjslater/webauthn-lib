@@ -20,14 +20,8 @@ final class AuthenticatorResponseDenormalizer implements DenormalizerInterface, 
     public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed
     {
         $realType = match (true) {
-            array_key_exists('attestationObject', $data) && ! array_key_exists(
-                'signature',
-                $data
-            ) => AuthenticatorAttestationResponse::class,
-            array_key_exists('authenticatorData', $data) && array_key_exists(
-                'signature',
-                $data
-            ) => AuthenticatorAssertionResponse::class,
+            array_key_exists('attestationObject', $data) => AuthenticatorAttestationResponse::class,
+            array_key_exists('signature', $data) => AuthenticatorAssertionResponse::class,
             default => throw InvalidDataException::create($data, 'Unable to create the response object'),
         };
 

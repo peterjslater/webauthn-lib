@@ -153,15 +153,15 @@ class PublicKeyCredentialLoader implements CanLogData
             return $this->serializer->deserialize($response, AuthenticatorResponse::class, 'json');
         }
         switch (true) {
-            case ! array_key_exists('authenticatorData', $response) && ! array_key_exists('signature', $response):
+            case array_key_exists('attestationObject', $response):
                 $attestationObject = $this->attestationObjectLoader->load($response['attestationObject']);
 
                 return AuthenticatorAttestationResponse::create(CollectedClientData::createFormJson(
                     $response['clientDataJSON']
                 ), $attestationObject, $transports);
-            case array_key_exists('authenticatorData', $response) && array_key_exists('signature', $response):
+            case array_key_exists('signature', $response):
                 $authDataLoader = AuthenticatorDataLoader::create();
-                $authData = Base64UrlSafe::decodeNoPadding($response['authenticatorData']);
+                $authData = Base64UrlSafe::decodeNoPadding($response['authenticatorData'] ?? '');
                 $authenticatorData = $authDataLoader->load($authData);
 
                 try {
