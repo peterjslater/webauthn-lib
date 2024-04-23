@@ -53,7 +53,10 @@ final class CheckOrigin implements CeremonyStep
         mb_substr(
             '.' . $clientDataRpId,
             -($rpIdLength + 1)
-        ) === '.' . $facetId || throw AuthenticatorResponseVerificationException::create('rpId mismatch.');
+        ) === '.' . $facetId || throw AuthenticatorResponseVerificationException::create('rpId mismatch. ' .  mb_substr(
+            '.' . $clientDataRpId,
+            -($rpIdLength + 1)
+        ). ' ' . $facetId);
     }
 
     private function getFacetId(
